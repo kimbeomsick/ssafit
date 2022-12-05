@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ssafit.model.dao.CommentDao">
+
+    <resultMap type="Comment" id="CommentMap">
+        <result column="comment_id" property="commentId"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="playlist_id" property="playlistId"/>
+        <result column="user_id" property="userId"/>
+        <result column="content" property="content"/>
+        <result column="like_cnt" property="likeCnt"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="edited_at" property="editedAt"/>
+    </resultMap>
+
+    <!--    //comment 생성-->
+    <!--    void insertComment(Comment comment);-->
+    <insert id="insertComment" parameterType="Comment">
+        insert into `comment`(parent_id, user_id, playlist_id, content)
+        values (${parentId}, #{userId}, ${playlistId}, #{content})
+    </insert>
+
+    <!--    //부모 comment 반환 (where parent_id = -1 )-->
+    <select id="selectParentComments" resultMap="CommentMap">
+        select *
+        from comment
+        where playlist_id = ${playlistId} and parent_id = -1
+    </select>
+
+    <select id="selectChildComments" resultMap="CommentMap">
+        select *
+        from comment
+        where parent_id = ${commentId}
+    </select>
+
+    <!--    //comment 단 하나 반환--> <!-- 수정완료 -->
+    <!--    Comment selectOneComment(HashMap);-->
+    <select id="selectOneComment" parameterType="HashMap" resultMap="CommentMap">
+        select comment_id, parent_id, playlist_id, user_id, content, like_cnt, created_at, edited_at,
+               (select count(*)
+                from commentLike
+                where user_id = #{userId} and comment_id = ${commentId}) as `is_like` -- 내가 이 코멘트에 좋아요를 눌렀는지 아닌지 확인한다.
+        from comment
+        where comment_id = ${commentId}
+    </select>
+
+    <select id="selectCommentById" resultMap="CommentMap">
+        select *
+        from comment
+        where comment_id = ${commentId}
+    </select>
+
+
+
+    <!--    //comment 수정-->
+    <!--    void updateComment(Comment comment);-->
+    <update id="updateComment" >
+        update comment
+        set content = #{content},
+            edited_at = now()
+            where comment_id = ${commentId}
+    </update>
+
+    <delete id="deleteComment" >
+        delete from comment
+        where comment_id = ${commentId}
+    </delete>
+
+    <update id="increaseLikeCnt">
+        update comment
+        set like_cnt = like_cnt + 1
+        where comment_id = ${commentId}
+    </update>
+
+    <update id="decreaseLikeCnt">
+        update comment
+        set like_cnt = like_cnt - 1
+        where comment_id = ${commentId}
+    </update>
+
+<!--    int isMyComment(int commentId, String userId);-->
+    <select id="isMyComment" resultType="int">
+        select count(*)
+        from comment
+        where comment_id = ${commentId} and user_id = #{userId}
+    </select>
+
+<!--    int isLikedComment(int commentId, String userId);-->
+    <select id="isLikedComment" resultType="int">
+        select count(*)
+        from comment_like
+        where comment_id = ${commentId} and user_id = #{userId}
+    </select>
+
+</mapper>

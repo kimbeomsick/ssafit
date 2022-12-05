@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ssafit.model.dao.PlaylistDao">
+
+    <resultMap type="Playlist" id="playlistMap">
+        <id column="playlist_id" property="playlistId" />
+        <result column="playlist_title" property="playlistTitle" />
+        <result column="content" property="content" />
+        <result column="user_id" property="userId" />
+        <result column="like_cnt" property="likeCnt" />
+        <result column="created_at" property="createdAt"/>
+        <result column="edited_at" property="editedAt"/>
+        <result column="open" property="open"/>
+    </resultMap>
+
+    <resultMap id="playlistLikeMap" type="PlaylistLike">
+        <id column="liked_at" property="likedAt"/>
+        <result column="playlist_id" property="playlistId"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+
+    <resultMap type="Video" id="videoMap">
+        <id column="video_id" property="videoId" />
+        <result column="title" property="title" />
+        <result column="thumbnail_path" property="thumbnailPath" />
+        <result column="like_cnt" property="likeCnt" />
+    </resultMap>
+
+<!--    List<Playlist> getPlaylist(Playlist playlist);-->
+    <select id="getMyOwnPlaylists" resultMap="playlistMap">
+        select *
+        from playlist
+        where user_id = #{userId}
+    </select>
+
+    <select id="getMyLikedPlaylists" resultType="int">
+        select playlist_id
+        from playlist_like
+        where user_id = #{userId}
+    </select>
+
+
+<!--    int insertPlaylist(Playlist playlist);-->
+    <insert id="insertPlaylist">
+        insert into playlist (playlist_title, content, user_id)
+        values (#{playlistTitle}, #{content}, #{userId})
+    </insert>
+
+<!--    int updatePlaylist(Playlist playlist);-->
+    <update id="updatePlaylist">
+        update playlist
+        set
+            playlist_title = #{playlistTitle},
+            content = #{content}
+        where playlist_id = ${playlistId}
+    </update>
+
+<!--    int deletePlaylist(int playlistId);-->
+    <delete id="deletePlaylist">
+        delete from playlist
+        where playlist_id = ${playlistId}
+    </delete>
+
+<!--    Playlist getPlaylist(int playlistId);-->
+    <select id="getPlaylistOne" resultMap="playlistMap">
+        select *
+        from playlist
+        where playlist_id = ${playlistId}
+    </select>
+
+    <select id="selectVideosOfPlaylist" resultMap="videoMap">
+        select *
+        from video
+        where video_id in (
+            select video_id
+            from video_in_playlist
+            where playlist_id = ${playlistId}
+            )
+    </select>
+
+<!--    int likePlaylist(int playlistId, String userId);-->
+    <insert id="likePlaylist">
+        insert into playlist_like (playlist_id, user_id)
+        values (${playlistId}, #{userId})
+    </insert>
+
+<!--    int unlikePlaylist(int playlistId, String userId);-->
+    <delete id="unlikePlaylist">
+        delete from playlist_like
+        where playlist_id = ${playlistId} and user_id= #{userId}
+    </delete>
+
+<!--    List<Playlist> hotPlaylist(String userId);-->
+    <select id="hotPlaylist" resultMap="playlistMap">
+        select *
+        from playlist
+        where user_id != #{userId}
+        order by like_cnt desc
+        limit ${num}
+    </select>
+
+<!--    List<Playlist> searchPlaylist(String query, String userId);-->
+    <select id="searchPlaylist" resultMap="playlistMap">
+        select *
+        from playlist
+        where user_id != #{userId}
+        and (playlist_title like '%${query}%' or content like '%${query}%')
+        order by like_cnt
+        limit ${num}
+    </select>
+
+    <update id="increaseLikeCnt">
+        update playlist
+        set like_cnt = like_cnt + 1
+        where playlist_id = ${playlistId}
+    </update>
+
+    <update id="decreaseLikeCnt">
+        update playlist
+        set like_cnt = like_cnt - 1
+        where playlist_id = ${playlistId}
+    </update>
+
+    <select id="isMyPlaylist" resultType="int">
+        select count(*)
+        from playlist
+        where playlist_id = ${playlistId} and user_id = #{userId}
+    </select>
+
+    <select id="isLikedPlaylist" resultType="int">
+        select count(*)
+        from playlist_like
+        where playlist_id = ${playlistId} and user_id = #{userId}
+    </select>
+
+</mapper>

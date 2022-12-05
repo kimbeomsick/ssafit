@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ssafit.model.dao.BookmarkDao">
+
+    <resultMap type="Bookmark" id="BookmarkMap">
+        <result column="video_id" property="videoId"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+
+
+    <select id="selectBookmarkList" parameterType="String" resultMap="BookmarkMap">
+    select *
+    from bookmark
+    where user_id = #{userId} and
+    </select>
+
+    <delete id="deleteBookmark" parameterType="bookmark" >
+        delete from bookmark
+        where user_id = #{userId} and
+              video_id = #{videoId}
+    </delete>
+
+    <insert id="insertBookmark" parameterType="bookmark" >
+        insert into bookmark values (#{videoId}, #{userId});
+    </insert>
+
+
+</mapper>

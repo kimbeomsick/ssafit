@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ssafit.model.dao.UserDao">
+
+    <resultMap type="User" id="userMap">
+        <id column="user_id" property="userId" />
+        <result column="name" property="name" />
+        <result column="user_password" property="userPassword" />
+        <result column="nickname" property="nickname" />
+        <result column="reg_date" property="regDate" />
+        <result column="experience" property="experience" />
+        <result column="favorite" property="favorite" />
+    </resultMap>
+
+<!--    boolean join(User user);-->
+    <insert id="join" parameterType="User" >
+        insert into user (user_id, user_password, `name`, nickname, favorite)
+        values (
+            #{userId},
+            #{userPassword},
+            #{name},
+            #{nickname},
+            #{favorite}
+        )
+    </insert>
+
+<!--    boolean deleteUser(String id);-->
+    <delete id="deleteUser">
+        delete from user
+        where user_id = #{userId}
+    </delete>
+
+<!--    boolean updateUser(HashMap<String, Object> map);-->
+    <update id="updateUser">
+        update user
+        set user_password = #{newPassword}, name = #{newName}
+        where user_id = #{userId}
+    </update>
+
+<!--    User selectUser(String id);-->
+    <select id="selectUser" resultMap="userMap">
+        select *
+        from user
+        where user_id = #{userId}
+    </select>
+
+<!--    int overlappedID(String id);-->
+    <select id="overlappedID" resultType="int">
+        select count(user_id)
+        from user
+        where user_id = #{userId}
+    </select>
+
+    <!--    boolean loginCheck(String id);-->
+    <!--    <select id="loginCheck" parameterType="string" resultType="int">-->
+    <!--        -->
+    <!--    </select>-->
+
+</mapper>

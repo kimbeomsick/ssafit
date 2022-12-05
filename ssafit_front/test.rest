@@ -1,0 +1,11 @@
+PUT http://localhost:9999/api/videos/like
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWQiOiJrYnMiLCJleHAiOjE2NjkyNzQ2NDN9.M_RR6KxpZIgueyJ1-Ga7nZkfgXgBM6xQTcaR5SNlQ9A
+Content-Type: application/json
+
+{
+    "userId": "",
+    "video":{
+        "title":"제목",
+        "videoId":"1234"
+    }
+}

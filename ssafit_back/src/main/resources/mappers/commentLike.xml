@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ssafit.model.dao.CommentLikeDao">
+
+    <resultMap type="CommentLike" id="CommentLikeMap">
+        <result column="comment_id" property="commentId" />
+        <result column="user_id" property="userId" />
+    </resultMap>
+
+<!--    //comment 좋아요-->
+    <insert id="insertCommentLike" >
+        insert into comment_like (comment_id, user_id)
+        values(#{commentId},#{userId})
+    </insert>
+
+
+<!--    //comment 좋아요 취소-->
+    <delete id="deleteCommentLike" >
+        delete from comment_like
+        where comment_id = #{commentId} and user_id = #{userId}
+    </delete>
+
+
+<!--    //comment 좋아요 여부-->
+    <select id="existsCommentLike" resultType="int">
+        select count(*)
+        from comment_like
+        where comment_id = #{commentId} and user_id = #{userId}
+    </select>
+
+</mapper>
