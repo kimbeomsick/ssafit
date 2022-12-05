@@ -29,6 +29,7 @@
 ![java](https://img.shields.io/badge/-java-brown?style=for-the-badge&logo=JAVA&logoColor=white)
 ![spring](https://img.shields.io/badge/-spring-green?style=for-the-badge&logo=spring&logoColor=white)
 ![springboot](https://img.shields.io/badge/-springboot-yellowgreen?style=for-the-badge&logo=springboot&logoColor=white)   
+![mysql](https://img.shields.io/badge/-mysql-blue?style=for-the-badge&logo=mysql&logoColor=white)   
 
 ## ⭐  주요기능
 
